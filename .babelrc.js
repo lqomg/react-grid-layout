@@ -15,6 +15,8 @@ module.exports = {
     "@babel/preset-flow"
   ],
   plugins: [
+    "@babel/plugin-proposal-nullish-coalescing-operator",
+    "@babel/plugin-proposal-optional-chaining",
     "@babel/plugin-transform-flow-comments",
     "@babel/plugin-proposal-class-properties",
     "babel-plugin-preval"

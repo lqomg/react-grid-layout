@@ -79,7 +79,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
 
   // Refactored to another module to make way for preval
   static propTypes = ReactGridLayoutPropTypes;
-
+  
   static defaultProps: DefaultProps = {
     autoSize: true,
     cols: 12,
@@ -140,6 +140,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
 
   dragEnterCounter: number = 0;
 
+  draging: boolean = false;
   componentDidMount() {
     this.setState({ mounted: true });
     // Possibly call back with layout on mount. This should be done after correcting the layout width
@@ -251,7 +252,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     const { layout } = this.state;
     const l = getLayoutItem(layout, i);
     if (!l) return;
-
+    this.draging = false;
     // Create placeholder (display only)
     const placeholder = {
       w: l.w,
@@ -265,7 +266,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     this.setState({
       oldDragItem: cloneLayoutItem(l),
       oldLayout: layout,
-      activeDrag: placeholder
+      activeDrag: null
     });
 
     return this.props.onDragStart(layout, l, l, null, e, node);
@@ -290,7 +291,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     const { cols, allowOverlap, preventCollision } = this.props;
     const l = getLayoutItem(layout, i);
     if (!l) return;
-
+    this.draging = true;
     // Create placeholder (display only)
     const placeholder = {
       w: l.w,
@@ -345,7 +346,14 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     let { layout } = this.state;
     const { cols, preventCollision, allowOverlap } = this.props;
     const l = getLayoutItem(layout, i);
-    if (!l) return;
+    if (!l || !this.draging){
+      this.setState({
+        activeDrag: null,
+        oldDragItem: null,
+        oldLayout: null
+      })
+      return; 
+    }
 
     // Move the element here
     const isUserAction = true;
